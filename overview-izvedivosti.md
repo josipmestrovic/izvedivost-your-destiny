@@ -1,28 +1,37 @@
-Izvedivost – Pregled
-1. Tax Display Configuration
-Feasibility: HIGH
+# Izvedivost – Pregled
 
-Implementation:
+## 1. Konfiguracija Prikaza Poreza
 
-WooCommerce → Settings → Tax:
-Display prices in the shop: Excluding tax
-Display prices during cart and checkout: Including tax
-Enable "Enable tax calculation" and "Display tax totals" options
-2. Monthly Sales Reports by Country
-Feasibility: MEDIUM
+**Izvedivost: VISOKA**
 
-Options:
-WooCommerce Analytics + Extensions
-WooCommerce Admin (core) provides basic analytics
-Custom extension/report needed for country-specific monthly breakdown
-Third-party Reporting:
-Metorik (advanced analytics) — $20-200/month
-Advanced WooCommerce Reporting plugin — ~$49
-Custom Reporting Solution:
-Custom dashboard widget using WP_Query and WC_Order
-Store tax data in order meta for easier queries
-Example Custom Report Code:
-PHP
+### Implementacija:
+
+**WooCommerce → Settings → Tax:**
+- Prikaži cijene u trgovini: Bez poreza
+- Prikaži cijene tijekom košarice i naplate: S porezom
+- Omogući opcije "Enable tax calculation" i "Display tax totals"
+
+## 2. Mjesečni Izvještaji Prodaje po Zemljama
+
+**Izvedivost: SREDNJA**
+
+### Opcije:
+
+#### WooCommerce Analytics + Proširenja
+- WooCommerce Admin (osnovna) pruža osnovnu analitiku
+- Potrebno je prilagođeno proširenje/izvještaj za mjesečni prikaz po zemljama
+
+#### Vanjski Izvještaji:
+- **Metorik** (napredna analitika) — $20-200/mjesec
+- **Advanced WooCommerce Reporting plugin** — ~$49
+
+#### Prilagođeno Rješenje za Izvještavanje:
+- Prilagođeni widget za nadzornu ploču koristeći WP_Query i WC_Order
+- Spremi podatke o porezu u meta podatke narudžbe za lakše upite
+
+### Primjer Koda za Prilagođeni Izvještaj:
+
+```php
 function country_sales_report() {
     $year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
     $months = range(1, 12);
@@ -59,61 +68,79 @@ function country_sales_report() {
         wp_reset_postdata();
     }
 
-    // Output report HTML/CSV
+    // Generiraj HTML/CSV izvještaj
 }
-3. PDF Invoices with Tax Information
-Feasibility: HIGH
+```
 
-Recommended Solutions:
-WooCommerce PDF Invoices & Packing Slips (Free/Premium €99)
-Customizable templates, add tax rate & country info
-PDF Invoices for WooCommerce by WebToffee ($69)
-Advanced features, better tax info handling
-Implementation Steps:
-Install and activate preferred plugin
-Configure templates to include:
-Tax rate applied
-Customer country
-Tax calculation breakdown
-Set automatic generation on order completion
-4. Newsletter Popup with Rewards
-Requirement Analysis
-Popup for newsletter subscription
-Free PDF download with subscription
-Unique one-time discount code (20%)
-Automated welcome email with PDF and coupon
-Technical Feasibility
-Newsletter Popup Implementation
-Feasibility: HIGH
+## 3. PDF Računi s Informacijama o Porezu
 
-Options:
+**Izvedivost: VISOKA**
 
-Email Marketing Integration:
-Mailchimp for WooCommerce (Free)
-ActiveCampaign for WooCommerce
-Dedicated Popup Plugins:
-Popup Maker (Free/Premium $87/year)
-OptinMonster ($9–49/month)
-Hustle (Free/Premium)
-Recommended: Integrated solution like Mailchimp + MC4WP
+### Preporučena Rješenja:
 
-Unique Coupon Generation
-Feasibility: MEDIUM-HIGH
+#### WooCommerce PDF Invoices & Packing Slips 
+- Besplatno/Premium €99
+- Prilagodljivi predlošci, dodaj stopu poreza i informacije o zemlji
 
-Implementation Options:
+#### PDF Invoices for WooCommerce by WebToffee 
+- $69
+- Napredne značajke, bolje rukovanje informacijama o porezu
 
-Custom code solution (hook into subscription, generate unique coupon)
-Plugin solutions:
-Advanced Coupons for WooCommerce ($69-199)
-WooCommerce Smart Coupons ($99)
-Example Coupon Generation Code
-PHP
+### Koraci Implementacije:
+1. Instaliraj i aktiviraj preferirani plugin
+2. Konfiguriraj predloške da uključuju:
+   - Primijenjenu stopu poreza
+   - Zemlju kupca
+   - Razčlamba računanja poreza
+3. Postavi automatsko generiranje nakon završetka narudžbe
+
+## 4. Newsletter Popup s Nagradama
+
+### Analiza Zahtjeva
+- Popup za pretplatu na newsletter
+- Besplatno PDF preuzimanje s pretplatom
+- Jedinstveni jednokratni kod za popust (20%)
+- Automatizirani e-mail dobrodošlice s PDF-om i kuponom
+
+### Tehnička Izvedivost
+
+#### Newsletter Popup Implementacija
+**Izvedivost: VISOKA**
+
+**Opcije:**
+
+##### Integracija E-mail Marketinga:
+- **Mailchimp for WooCommerce** (Besplatno)
+- **ActiveCampaign for WooCommerce**
+
+##### Dedicirani Popup Plugini:
+- **Popup Maker** (Besplatno/Premium $87/godina)
+- **OptinMonster** ($9–49/mjesec)
+- **Hustle** (Besplatno/Premium)
+
+**Preporučeno:** Integrirano rješenje poput Mailchimp + MC4WP
+
+#### Generiranje Jedinstvenih Kupona
+**Izvedivost: SREDNJA-VISOKA**
+
+**Opcije Implementacije:**
+
+##### Prilagođeno kod rješenje
+Kačica u pretplatu, generiraj jedinstveni kupon
+
+##### Plugin rješenja:
+- **Advanced Coupons for WooCommerce** ($69-199)
+- **WooCommerce Smart Coupons** ($99)
+
+### Primjer Koda za Generiranje Kupona
+
+```php
 function generate_unique_subscriber_coupon($email) {
     $coupon_code = 'NEWS' . substr(md5(uniqid($email, true)), 0, 8);
     $coupon = new WC_Coupon();
     $coupon->set_code($coupon_code);
     $coupon->set_discount_type('percent');
-    $coupon->set_amount(20); // 20% discount
+    $coupon->set_amount(20); // 20% popust
     $coupon->set_individual_use(true);
     $coupon->set_usage_limit(1);
     $coupon->set_email_restrictions(array($email));
@@ -122,7 +149,7 @@ function generate_unique_subscriber_coupon($email) {
     return $coupon_code;
 }
 
-// Hook to form submission event
+// Kačica za događaj slanja forme
 add_action('mc4wp_form_subscribed', 'process_newsletter_subscription', 10, 3);
 function process_newsletter_subscription($form, $args, $subscriber) {
     $email = $subscriber['EMAIL'];
@@ -130,56 +157,79 @@ function process_newsletter_subscription($form, $args, $subscriber) {
     update_option('subscriber_coupon_' . md5($email), $coupon);
     send_welcome_email($email, $coupon);
 }
-Automated Welcome Email with Attachments
-Feasibility: MEDIUM-HIGH
+```
 
-Implementation:
+#### Automatizirani E-mail Dobrodošlice s Prilozima
+**Izvedivost: SREDNJA-VISOKA**
 
-Use marketing platform automation for email/PDF/coupon
-Or custom WP email with wp_mail() and attachments
-Considerations:
+**Implementacija:**
+- Koristi automatizaciju marketing platforme za e-mail/PDF/kupon
+- Ili prilagođeni WP e-mail s wp_mail() i prilozima
 
-PDF storage with access control
-Email deliverability (e.g. SendGrid)
-Link tracking
-5. Local Testing Setup
-Environment
-Local by Flywheel, XAMPP/MAMP, Docker
-Configuration
-Latest WP & WooCommerce
-Sample digital products
-Testing Tax System
-Add country tax rates
-Test with geolocation (browser extension or code):
-PHP
+**Razmotriti:**
+- PDF spremanje s kontrolom pristupa
+- Pouzdanost dostave e-maila (npr. SendGrid)
+- Praćenje linkova
+
+## 5. Lokalno Testno Okruženje
+
+### Okruženje
+- Local by Flywheel, XAMPP/MAMP, Docker
+
+### Konfiguracija
+- Najnoviji WP & WooCommerce
+- Uzorni digitalni proizvodi
+
+### Testiranje Poreznog Sustava
+- Dodaj stope poreza po zemljama
+- Testiraj s geolokacijom (proširenje preglednika ili kod):
+
+```php
 add_filter('woocommerce_geolocate_ip', function($ip_address) {
     return array(
-        'country' => 'US', // Change for testing
+        'country' => 'US', // Promijeni za testiranje
         'state' => 'NY',
     );
 });
-Test Scenarios
-Create test orders from different locations
-Verify tax, PDF generation, email delivery, coupon usage
-6. Required Plugins & Resources
-Core: WordPress, WooCommerce
-Tax: WooCommerce PDF Invoices & Packing Slips, GeoIP plugin (optional)
-Newsletter & Coupon: Mailchimp for WooCommerce, MC4WP, ActiveCampaign, WP Mail SMTP, Advanced Coupons (optional)
-Reporting: WooCommerce Admin, Metorik (optional)
-7. Estimated Implementation Effort
-Area	Hours
-Base WooCommerce Setup	2–4
-Tax Configuration	2–3
-Geolocation & Confirmation	4–6
-PDF Invoice Customization	2–3
-Newsletter Popup	3–4
-Coupon Generation System	4–5
-Email Configuration	2–3
-Testing & Debugging	6–8
-Total Estimated	25–36
-8. Conclusion
-Both requirements are technically feasible within the WooCommerce ecosystem, though complexity varies:
+```
 
-Tax management: Highly feasible with minimal custom code, leveraging WooCommerce core and plugins.
-Newsletter popup with rewards: Moderately complex but achievable with email integration and custom coupon logic.
-Optimal implementation combines WooCommerce features, established plugins, and targeted custom code for efficiency and maintainability.
+### Test Scenariji
+- Stvori test narudžbe iz različitih lokacija
+- Provjeri porez, generiranje PDF-a, dostavu e-maila, korištenje kupona
+
+## 6. Potrebni Plugini i Resursi
+
+### Osnovno: 
+- WordPress, WooCommerce
+
+### Porez: 
+- WooCommerce PDF Invoices & Packing Slips, GeoIP plugin (opcionalno)
+
+### Newsletter i Kupon: 
+- Mailchimp for WooCommerce, MC4WP, ActiveCampaign, WP Mail SMTP, Advanced Coupons (opcionalno)
+
+### Izvještavanje: 
+- WooCommerce Admin, Metorik (opcionalno)
+
+## 7. Procijenjeni Trud Implementacije
+
+| Područje | Sati |
+|----------|------|
+| Osnovno WooCommerce Postavljanje | 2–4 |
+| Konfiguracija Poreza | 2–3 |
+| Geolokacija i Potvrda | 4–6 |
+| Prilagodba PDF Računa | 2–3 |
+| Newsletter Popup | 3–4 |
+| Sustav Generiranja Kupona | 4–5 |
+| Konfiguracija E-maila | 2–3 |
+| Testiranje i Otklanjanje Grešaka | 6–8 |
+| **Ukupno Procijenjeno** | **25–36** |
+
+## 8. Zaključak
+
+Oba zahtjeva su tehnički izvedljiva unutar WooCommerce ekosustava, iako složenost varira:
+
+- **Upravljanje porezima:** Visoko izvedljivo s minimalnim prilagođenim kodom, koristeći WooCommerce osnove i plugine.
+- **Newsletter popup s nagradama:** Umjereno složeno, ali ostvarivo s integracijom e-maila i prilagođenom logikom kupona.
+
+Optimalna implementacija kombinira WooCommerce značajke, etablirane plugine i ciljani prilagođeni kod za efikasnost i održivost.
